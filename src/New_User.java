@@ -12,6 +12,10 @@ import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Component;
+import javax.swing.Box;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 
 public class New_User extends JFrame {
 
@@ -23,12 +27,20 @@ public class New_User extends JFrame {
 	private JTextField firstNameField;
 	private JTextField lastNameField;
 	private JTextField companyField;
+	private JLabel badUsernamelabel;
+	private JLabel badPasswordlabel;
+	
+	
 	Font  headerFont = new Font("Calibri", Font.PLAIN, 35);
 	Font baseFont = new Font("Calibri", Font.BOLD, 26);
+	private JTextField emailField;
+	JLabel companyErrorLabel;
+	
 	/**
 	 * Launch the application.
+	 * @return 
 	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -39,33 +51,112 @@ public class New_User extends JFrame {
 				}
 			}
 		});
+	}*/
+	public void terminate()
+	{
+		this.dispose();
 	}
-
 	/**
 	 * Create the frame.
 	 */
-	public New_User() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 900, 1200);
+	public New_User(boolean p) {
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1100, 1400);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
+		JPanel createbuttonpanel = new JPanel();
+		contentPane.add(createbuttonpanel, BorderLayout.SOUTH);
+		
+		createbuttonpanel.setLayout(new GridLayout(1, 5, 0, 0));
+		
+		Component horizontalStrut_1 = Box.createHorizontalStrut(20);
+		createbuttonpanel.add(horizontalStrut_1);
+		
+		JButton returnButton = new JButton("Return");
+		returnButton.setFont(new Font("Calibri", Font.BOLD, 30));
+		returnButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(p == true){
+					userSignIn us = new userSignIn();
+					terminate();
+				}
+				else{
+					NewCompany nc = new NewCompany();
+					terminate();
+				}
+				
+			}
+		});
+		
+		createbuttonpanel.add(returnButton);
+		
+		JLabel label_4 = new JLabel("       ");
+		createbuttonpanel.add(label_4);
+		
+		JButton btnCreateUser = new JButton("Create User");
+		btnCreateUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				if(dbc.checkExistingUsername(usernameField.getText()) == true){
+					badUsernamelabel.setText("Username already taken.");
+				}
+				else{
+				if(p == true){
+					int companyId;
+				try{   companyId = Integer.parseInt(companyField.getText());
+				if(dbc.checkExistingUsername(usernameField.getText()) == false){
+					
+						dbc.addUser(usernameField.getText(), passwordField.getText(), firstNameField.getText(), 
+								lastNameField.getText(), emailField.getText(), companyId, 
+								"Employee");	
+								userSignIn us = new userSignIn();
+								terminate();
+					}
+				}
+					
+				catch(NumberFormatException ex){
+					companyErrorLabel.setText("Incorrect company ID.");
+					}
+				}
+					else{
+						dbc.addUser(usernameField.getText(), passwordField.getText(), firstNameField.getText(), 
+							lastNameField.getText(), emailField.getText(), 4, 
+							"Admin");
+							userSignIn si = new userSignIn();
+							terminate();
+							
+					}
+				}
+			}
+				
+		});
+		
+		
+		
+		
+		btnCreateUser.setFont(new Font("Calibri", Font.BOLD, 30));
+		createbuttonpanel.add(btnCreateUser);
+		
+		Component horizontalStrut = Box.createHorizontalStrut(20);
+		createbuttonpanel.add(horizontalStrut);
+		
 		JPanel usercreatepanel = new JPanel();
 		contentPane.add(usercreatepanel, BorderLayout.NORTH);
-		usercreatepanel.setLayout(new GridLayout(23, 1, 0, 0));
+		usercreatepanel.setLayout(new GridLayout(26, 1, 0, 0));
 		
 		JLabel lblEnterUserInformation = new JLabel("Enter user information.");
-		lblEnterUserInformation.setFont(new Font("Calibri", Font.PLAIN, 30));
+		lblEnterUserInformation.setFont(new Font("Calibri", Font.BOLD, 30));
 		usercreatepanel.add(lblEnterUserInformation);
 		
 		JLabel spacerLabel = new JLabel("    ");
-		spacerLabel.setFont(new Font("Calibri", Font.PLAIN, 30));
+		spacerLabel.setFont(new Font("Calibri", Font.BOLD, 30));
 		usercreatepanel.add(spacerLabel);
 		
 		JLabel lblUsername = new JLabel("Username:");
-		lblUsername.setFont(new Font("Calibri", Font.PLAIN, 30));
+		lblUsername.setFont(new Font("Calibri", Font.BOLD, 30));
 		usercreatepanel.add(lblUsername);
 		
 		usernameField = new JTextField();
@@ -73,27 +164,27 @@ public class New_User extends JFrame {
 		usercreatepanel.add(usernameField);
 		usernameField.setColumns(10);
 		
-		JLabel badUsernamelabel = new JLabel("    ");
+		badUsernamelabel = new JLabel("    ");
 		badUsernamelabel.setFont(new Font("Calibri", Font.PLAIN, 30));
 		usercreatepanel.add(badUsernamelabel);
 		
 		JLabel lblPassword = new JLabel("Password:");
-		lblPassword.setFont(new Font("Calibri", Font.PLAIN, 30));
+		lblPassword.setFont(new Font("Calibri", Font.BOLD, 30));
 		usercreatepanel.add(lblPassword);
 		
 		passwordField = new JPasswordField();
 		passwordField.setFont(new Font("Calibri", Font.PLAIN, 30));
 		usercreatepanel.add(passwordField);
 		
-		JLabel label_1 = new JLabel("    ");
-		label_1.setFont(new Font("Calibri", Font.PLAIN, 30));
-		usercreatepanel.add(label_1);
+		JLabel passwordsDontMatchlabel = new JLabel("    ");
+		passwordsDontMatchlabel.setFont(new Font("Calibri", Font.PLAIN, 30));
+		usercreatepanel.add(passwordsDontMatchlabel);
 		
 		JLabel lblConfirmPassword = new JLabel("Confirm Password:");
-		lblConfirmPassword.setFont(new Font("Calibri", Font.PLAIN, 30));
+		lblConfirmPassword.setFont(new Font("Calibri", Font.BOLD, 30));
 		usercreatepanel.add(lblConfirmPassword);
 		
-		confirmPasswordField = new JTextField();
+		confirmPasswordField = new JPasswordField();
 		confirmPasswordField.setFont(new Font("Calibri", Font.PLAIN, 30));
 		usercreatepanel.add(confirmPasswordField);
 		confirmPasswordField.setColumns(10);
@@ -103,7 +194,7 @@ public class New_User extends JFrame {
 		usercreatepanel.add(badPasswordlabel);
 		
 		JLabel lblFirstName = new JLabel("First Name:");
-		lblFirstName.setFont(new Font("Calibri", Font.PLAIN, 30));
+		lblFirstName.setFont(new Font("Calibri", Font.BOLD, 30));
 		usercreatepanel.add(lblFirstName);
 		
 		firstNameField = new JTextField();
@@ -112,11 +203,11 @@ public class New_User extends JFrame {
 		firstNameField.setColumns(10);
 		
 		JLabel label_3 = new JLabel("    ");
-		label_3.setFont(new Font("Calibri", Font.PLAIN, 30));
+		label_3.setFont(new Font("Calibri", Font.BOLD, 30));
 		usercreatepanel.add(label_3);
 		
 		JLabel lblLastName = new JLabel("Last Name:");
-		lblLastName.setFont(new Font("Calibri", Font.PLAIN, 30));
+		lblLastName.setFont(new Font("Calibri", Font.BOLD, 30));
 		usercreatepanel.add(lblLastName);
 		
 		lastNameField = new JTextField();
@@ -125,22 +216,38 @@ public class New_User extends JFrame {
 		lastNameField.setColumns(10);
 		
 		JLabel label = new JLabel("     ");
-		label.setFont(new Font("Calibri", Font.PLAIN, 30));
+		label.setFont(new Font("Calibri", Font.BOLD, 30));
 		usercreatepanel.add(label);
 		
-		JLabel lblCompanyName = new JLabel("Company Name:");
-		lblCompanyName.setFont(new Font("Calibri", Font.PLAIN, 30));
+		JLabel lblEmailAddress = new JLabel("Email Address:");
+		lblEmailAddress.setFont(new Font("Calibri", Font.BOLD, 30));
+		usercreatepanel.add(lblEmailAddress);
+		
+		emailField = new JTextField();
+		emailField.setFont(new Font("Calibri", Font.PLAIN, 30));
+
+		usercreatepanel.add(emailField);
+		emailField.setColumns(10);
+		
+		JLabel label_5 = new JLabel("     ");
+		label_5.setFont(new Font("Calibri", Font.PLAIN, 30));
+		usercreatepanel.add(label_5);
+		
+	if(p == true){
+		JLabel lblCompanyName = new JLabel("Company ID:");
+		lblCompanyName.setFont(new Font("Calibri", Font.BOLD, 30));
 		usercreatepanel.add(lblCompanyName);
+		
 		
 		companyField = new JTextField();
 		companyField.setFont(new Font("Calibri", Font.PLAIN, 30));
 		usercreatepanel.add(companyField);
 		companyField.setColumns(10);
 		
-		JLabel companyErrorLabel = new JLabel("       ");
+		companyErrorLabel = new JLabel("       ");
 		companyErrorLabel.setFont(new Font("Calibri", Font.PLAIN, 30));
 		usercreatepanel.add(companyErrorLabel);
-		
+		}
 		JLabel lblNewLabel = new JLabel("     ");
 		lblNewLabel.setFont(new Font("Calibri", Font.PLAIN, 30));
 		usercreatepanel.add(lblNewLabel);
@@ -149,22 +256,9 @@ public class New_User extends JFrame {
 		label_2.setFont(new Font("Calibri", Font.PLAIN, 30));
 		usercreatepanel.add(label_2);
 		
-		JPanel createbuttonpanel = new JPanel();
-		usercreatepanel.add(createbuttonpanel);
-		createbuttonpanel.setLayout(new GridLayout(1, 2, 0, 0));
-		
-		JLabel label_4 = new JLabel("       ");
-		createbuttonpanel.add(label_4);
-		
-		JButton btnCreateUser = new JButton("Create User");
-		btnCreateUser.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				dbc.checkExistingUsername(usernameField.getText());
-			}
-		});
-		btnCreateUser.setFont(new Font("Calibri", Font.PLAIN, 30));
-		createbuttonpanel.add(btnCreateUser);
-		
 	}
-
+	
 }
+
+
+

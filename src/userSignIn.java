@@ -14,6 +14,8 @@ import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import javax.swing.Action;
 import java.awt.event.ActionListener;
+import java.awt.Component;
+import javax.swing.Box;
 
 //TODO New user, Forgot Password
 public class userSignIn extends JFrame{
@@ -24,11 +26,15 @@ public class userSignIn extends JFrame{
 	JLabel blankLabel= new JLabel("            ");
 	
 	Font  headerFont = new Font("Calibri", Font.PLAIN, 35);
-	Font baseFont = new Font("Calibri", Font.BOLD, 26);
+	Font baseFont = new Font("Calibri", Font.BOLD, 28);
 	
 	JTextField usernameSignIn = new JTextField();
 	JPasswordField passwordSignIn =  new JPasswordField();
 	private final Action action = new SwingAction();
+	
+	void terminate(){
+		this.dispose();
+	}
 	
 	userSignIn()
 	{
@@ -37,9 +43,14 @@ public class userSignIn extends JFrame{
 	JPanel mPanel= new JPanel();
 	mPanel.setLayout(new BorderLayout());
 	
+	JPanel panel_1 = new JPanel();
+	mPanel.add(panel_1, BorderLayout.NORTH);
+	panel_1.setLayout(new GridLayout(2, 1, 0, 0));
+	
 	
 	
 	JPanel topPanel= new JPanel();
+	panel_1.add(topPanel);
 	topPanel.setLayout(new GridLayout(4,1));
 	
 	JLabel lblNewLabel_6 = new JLabel(" ");
@@ -62,7 +73,8 @@ public class userSignIn extends JFrame{
 	topLabelthree.setFont(headerFont);
 	topPanel.add(topLabelthree);
 	
-	mPanel.add(topPanel, BorderLayout.NORTH);
+	Component verticalStrut = Box.createVerticalStrut(20);
+	panel_1.add(verticalStrut);
 	
 	//make a panel to hold  sign in panel 
 	JPanel signInContainer = new JPanel();
@@ -73,9 +85,6 @@ public class userSignIn extends JFrame{
 	signInPanel.setLayout(new GridLayout(1, 5));
 	signInPanel.setSize(200, 300);
 	
-	JLabel lblNewLabel = new JLabel("     ");
-	signInPanel.add(lblNewLabel);
-	
 	JLabel signUsername = new JLabel("        Username:");
 	signUsername.setFont(baseFont);
 	signInPanel.add(signUsername);
@@ -85,6 +94,9 @@ public class userSignIn extends JFrame{
 	JLabel signPassword = new JLabel("   Password:");
 	signPassword.setFont(baseFont);
 	passwordSignIn.setFont(baseFont);
+	
+	JLabel lblNewLabel = new JLabel("     ");
+	signInPanel.add(lblNewLabel);
 	signInPanel.add(signPassword);
 	
 	signInPanel.add(passwordSignIn);
@@ -127,6 +139,12 @@ public class userSignIn extends JFrame{
 	
 	JButton newCompanyButton = new JButton("New Company ");
 	newCompanyButton.setFont(baseFont);
+	newCompanyButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			NewCompany nc = new NewCompany();
+			nc.setVisible(true);
+		}
+	});
 	bottomPanel_1.add(newCompanyButton);
 	
 	JLabel label = new JLabel("       ");
@@ -138,8 +156,9 @@ public class userSignIn extends JFrame{
 	
 	newUserButton_1.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent arg0) {
-			New_User nu = new New_User();
+			New_User nu = new New_User(true);
 			nu.setVisible(true);
+			terminate();
 		}
 	});
 	
@@ -155,13 +174,28 @@ public class userSignIn extends JFrame{
 	signInButton_1.setFont(baseFont);
 	bottomPanel_1.add(signInButton_1);
 	
+	signInButton_1.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			boolean sign_in_check = dbc.signin(usernameSignIn.getText(), passwordSignIn.getText());
+			System.out.println(sign_in_check);
+			if(sign_in_check == true){
+			//System.out.println(currentUser.getInstance().getCompany_id());
+			inventoryFrame inf = new inventoryFrame();
+			inf.setVisible(true);
+			terminate();
+		}
+	  }
+	});
+	
+	
+	
 	JLabel lblNewLabel_3 = new JLabel("     ");
 	bottomPanel_1.add(lblNewLabel_3);
 	
 	JLabel lblNewLabel_5 = new JLabel("     ");
 	panel.add(lblNewLabel_5);
 	
-	setSize(1475,1000);
+	setSize(1775,1200);
 	setLocation(1000, 300);
 	setVisible(true);
 
@@ -170,7 +204,7 @@ public class userSignIn extends JFrame{
 	}
 	private class SwingAction extends AbstractAction {
 		public SwingAction() {
-			putValue(NAME, "SwingAction");
+			putValue(NAME, "New User");
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 		public void actionPerformed(ActionEvent e) {
